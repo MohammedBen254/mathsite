@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Exams{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">Exams</h1>
+<ul class="list-disc list-inside">
+    {% for exam in exams %}
+    <li>
+        <a href="{{ exam.pdf_file.url }}" class="text-blue-600 hover:underline" target="_blank">{{ exam.title }} ({{ exam.course.title }})</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

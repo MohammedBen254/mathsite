@@ -1,11 +1,8 @@
-from django.urls import path
-from . import views
-from django.urls import include
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    # Add other URL patterns for your links here
-    # app
-    path('app/', include('app.urls')),
-    
+    path('admin/', admin.site.urls),
+    path('courses/', include('courses.urls')),
+    path('', include('blog.urls')),  # Homepage will show articles
 ]
