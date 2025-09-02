@@ -147,9 +147,6 @@ EMAIL_PORT = 587                     # (TLS) or 465 (SSL)
 EMAIL_USE_TLS = True                 # If using port 587
 EMAIL_USE_SSL = False                # If using port 465, set this True and TLS False
 
-EMAIL_HOST_PASSWORD='mathricsnewway@gmail.com'
-EMAIL_HOST_PASSWORD = 'suda uuva moup wabg' # <-- CHANGE to your email password or app password
 
-RECIEPENT_EMAIL='mohamed9benhaj@gmail.com'
 
 
