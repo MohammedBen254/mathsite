@@ -11,10 +11,9 @@ from email.mime.text import MIMEText
 # --- Your email credentials (better to use environment variables in production) ---
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER='mathricsnewway@gmail.com'
-EMAIL_HOST_PASSWORD = 'suda uuva moup wabg' # <-- CHANGE to your email password or app password
-
-RECIEPENT_EMAIL='mathricsnewway@gmail.com'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+RECIEPENT_EMAIL = ''  # The email where you want to receive contact form messages
 
 # --- (course_list, courses_by_level, and other views remain the same) ---
 
