@@ -3,16 +3,70 @@
 {% block title %}{{ course.title }}{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl font-bold mb-2">{{ course.title }}</h1>
-<p class="text-gray-600 mb-4">{{ course.level.name }}</p>
-<p>{{ course.description }}</p>
+<div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+    <button onclick="history.back()" class="mb-6 inline-flex items-center px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors duration-300">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Retour
+                </button>
+    <div class="mb-8 border-b pb-4">
+        <h1 class="text-4xl font-bold text-gray-800">{{ course.title }}</h1>
+        <p class="text-lg text-gray-500 mt-1">{{ course.level.name }}</p>
+    </div>
 
-<h2 class="text-2xl font-bold mt-6 mb-4">Chapters</h2>
-<ul class="list-disc list-inside">
-    {% for chapter in course.chapter_set.all %}
-    <li>
-        <a href="{% url 'chapter_detail' chapter.pk %}" class="text-blue-600 hover:underline">{{ chapter.title }}</a>
-    </li>
-    {% endfor %}
-</ul>
+    <div class="prose max-w-none mb-10">
+        <p>{{ course.description }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <div class="lg:col-span-1">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Chapitres</h2>
+            <div class="space-y-3">
+                {% for chapter in chapters %}
+                <a href="{% url 'chapter_detail' chapter.pk %}" class="block p-4 bg-gray-50 rounded-lg hover:bg-indigo-100 transition duration-300">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span class="font-medium text-gray-800">{{ chapter.title }}</span>
+                    </div>
+                </a>
+                {% empty %}
+                <p class="text-gray-500 p-4">Aucun chapitre pour ce cours.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+<div class="lg:col-span-1">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Exercices</h2>
+    <div class="space-y-3">
+        {% for exercise in exercises %}
+        <a href="{% url 'exercise_detail' exercise.pk %}" class="block p-4 bg-gray-50 rounded-lg hover:bg-indigo-100 transition duration-300">
+            <div class="flex items-center">
+                 <svg class="w-6 h-6 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                <span class="font-medium text-gray-800">{{ exercise.title }}</span>
+            </div>
+        </a>
+        {% empty %}
+        <p class="text-gray-500 p-4">Aucun exercice pour ce cours.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- <div class="lg:col-span-1">
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Examens</h2>
+    <div class="space-y-3">
+        {% for exam in exams %}
+        <a href="{% url 'exam_detail' exam.pk %}" class="block p-4 bg-gray-50 rounded-lg hover:bg-indigo-100 transition duration-300">
+            <div class="flex items-center">
+               <svg class="w-6 h-6 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="font-medium text-gray-800">{{ exam.title }}</span>
+            </div>
+        </a>
+        {% empty %}
+        <p class="text-gray-500 p-4">Aucun examen pour ce cours.</p>
+        {% endfor %}
+    </div>
+</div> -->
+
+    </div>
+</div>
 {% endblock %}

@@ -23,21 +23,21 @@ class Chapter(models.Model):
     def __str__(self):
         return self.title
 
+# courses/models.py
+
 class Exercise(models.Model):
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    pdf_file = models.FileField(upload_to='exercises/', blank=True, null=True)
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
 
-# courses/models.py
 
 class Exam(models.Model):
     title = models.CharField(max_length=200)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    level = models.ForeignKey(SchoolLevel, on_delete=models.CASCADE)
     pdf_file = models.FileField(upload_to='exams/')
-    # --- Add this line ---
     with_solution = models.BooleanField(default=False)
 
     def __str__(self):

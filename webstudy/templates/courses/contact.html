@@ -4,7 +4,14 @@
 
 {% block content %}
 <div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow-lg">
-
+     {% if messages %}
+        {% for message in messages %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+                <p class="font-bold">Succès!</p>
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
     <div class="text-center mb-10">
         <h1 class="text-4xl font-bold text-gray-800">Get in Touch</h1>
         <p class="text-gray-500 mt-2">We'd love to hear from you. Please fill out the form below.</p>

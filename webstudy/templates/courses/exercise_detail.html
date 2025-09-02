@@ -1,18 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Exams{% endblock %}
+{% block title %}{{ exercise.title }}{% endblock %}
 
 {% block content %}
 <button onclick="history.back()" class="mb-6 inline-flex items-center px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors duration-300">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Retour
                 </button>
-<h1 class="text-3xl font-bold mb-4">Exams</h1>
-<ul class="list-disc list-inside">
-    {% for exam in exams %}
-    <li>
-        <a href="{{ exam.pdf_file.url }}" class="text-blue-600 hover:underline" target="_blank">{{ exam.title }} ({{ exam.course.title }})</a>
-    </li>
-    {% endfor %}
-</ul>
+<h1 class="text-3xl font-bold mb-4">{{ exercise.title }}</h1>
+
+{% if exercise.pdf_file.url %}
+    <div class="relative w-full h-[80vh] bg-gray-200">
+        <iframe
+            src="{% static 'web/viewer.html' %}?file={{ exercise.pdf_file.url }}"
+            width="100%"
+            height="100%"
+            style="border: none;"
+        >
+        </iframe>
+    </div>
+{% else %}
+    <p class="text-red-500">No PDF has been uploaded for this exercise.</p>
+{% endif %}
 {% endblock %}

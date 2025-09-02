@@ -1,72 +1,116 @@
-from django.shortcuts import render, get_object_or_404
-# from .models import Course, Chapter, Exam
-from django.shortcuts import redirect # Import redirect to handle post-submission redirects
-from django.contrib import messages # Import the messages framework
-from .forms import ContactForm # Import your new form
-from .models import Course, Chapter, Exam, SchoolLevel
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .forms import ContactForm
+from .models import Course, Chapter, Exam, SchoolLevel, Exercise
+from django.template.loader import render_to_string
+from django.conf import settings
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-# This view shows ALL courses
+# --- Your email credentials (better to use environment variables in production) ---
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER='mathricsnewway@gmail.com'
+EMAIL_HOST_PASSWORD = 'suda uuva moup wabg' # <-- CHANGE to your email password or app password
+
+RECIEPENT_EMAIL='mathricsnewway@gmail.com'
+
+# --- (course_list, courses_by_level, and other views remain the same) ---
+
 def course_list(request):
     courses = Course.objects.all()
     return render(request, 'courses/course_list.html', {'courses': courses})
 
-# --- Add this new view function ---
 def courses_by_level(request, level_id):
-    # Get the specific school level the user clicked on
     level = get_object_or_404(SchoolLevel, pk=level_id)
-    # Get all courses that belong to that level
-    courses = Course.objects.filter(level=level)
-    # Reuse the same template, but pass the specific level and filtered courses
+    view_type = request.GET.get('view', 'courses')
     context = {
         'level': level,
-        'courses': courses
+        'view_type': view_type,
     }
-    return render(request, 'courses/course_list.html', context)
-
-# def course_list(request):
-#     courses = Course.objects.all()
-#     return render(request, 'courses/course_list.html', {'courses': courses})
+    if view_type == 'exams':
+        exams_with_solution = Exam.objects.filter(level=level, with_solution=True)
+        exams_blank = Exam.objects.filter(level=level, with_solution=False)
+        context['exams_with_solution'] = exams_with_solution
+        context['exams_blank'] = exams_blank
+    else:
+        courses = Course.objects.filter(level=level)
+        context['courses'] = courses
+    return render(request, 'courses/level_detail.html', context)
 
 def course_detail(request, pk):
     course = get_object_or_404(Course, pk=pk)
-    chapters_found = course.chapter_set.all()
-    print(f"DEBUG: Course is '{course.title}'. Chapters found: {chapters_found[0].pdf_file}")
-
-    return render(request, 'courses/course_detail.html', {'course': course})
+    chapters = course.chapter_set.all()
+    exercises = Exercise.objects.filter(chapter__course=course)
+    context = {
+        'course': course,
+        'chapters': chapters,
+        'exercises': exercises,
+    }
+    return render(request, 'courses/course_detail.html', context)
 
 def chapter_detail(request, pk):
     chapter = get_object_or_404(Chapter, pk=pk)
-    
     return render(request, 'courses/chapter_detail.html', {'chapter': chapter})
+
+def exercise_detail(request, pk):
+    exercise = get_object_or_404(Exercise, pk=pk)
+    return render(request, 'courses/exercise_detail.html', {'exercise': exercise})
 
 def exam_list(request):
     exams = Exam.objects.all()
     return render(request, 'courses/exam_list.html', {'exams': exams})
 
+def exam_detail(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    return render(request, 'courses/exam_detail.html', {'exam': exam})
+
 def contact(request):
     form = ContactForm()
     return render(request, 'courses/contact.html', {'form': form})
 
-# View to process the form data
+def send_email(name, sender_email, message_text):
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"Contact Form Submission from {name}"
+        msg["From"] = EMAIL_HOST_USER
+        msg["To"] = RECIEPENT_EMAIL
+
+        # --- THIS IS THE KEY CHANGE ---
+        # 1. Prepare the context for the template
+        email_context = {
+            'name': name,
+            'email': sender_email,
+            'message': message_text,
+        }
+        # 2. Render the HTML from your template file
+        html_part = render_to_string('courses/contact_email.html', email_context)
+        # -----------------------------
+        
+        msg.attach(MIMEText(html_part, "html"))
+
+        server = smtplib.SMTP(EMAIL_HOST, EMAIL_PORT)
+        server.starttls()
+        server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+        server.sendmail(EMAIL_HOST_USER, RECIEPENT_EMAIL, msg.as_string())
+        server.quit()
+        print("✅ Email sent successfully!")
+    except Exception as e:
+        print("❌ Error sending email:", e)
+
 def send_contact_info(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # The data is valid, you can now access it
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
-            message_text = form.cleaned_data['message']
-
-            # THIS IS THE FIX:
-            # Instead of message(...), use print() to see it in the terminal
-            print(f"Contact form submitted by: {name} ({email})")
-            print(f"Message: {message_text}")
-
-            # Optional: Show a success message to the user on the page
-            messages.success(request, 'Your message has been sent successfully!')
-
-            # Redirect back to the contact page after successful submission
+            message = form.cleaned_data['message']
+            send_email(name, email, message)
+            messages.success(request, 'Votre message a été envoyé avec succès!')
             return redirect('contact')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
+            return render(request, 'courses/contact.html', {'form': form})
     else:
-        # If not a POST request, just redirect to the contact page
         return redirect('contact')

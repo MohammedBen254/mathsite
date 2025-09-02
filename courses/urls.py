@@ -9,7 +9,11 @@ urlpatterns = [
     path('level/<int:level_id>/', views.courses_by_level, name='courses_by_level'),
     path('<int:pk>/', views.course_detail, name='course_detail'),
     path('chapter/<int:pk>/', views.chapter_detail, name='chapter_detail'),
+    path('exercise/<int:pk>/', views.exercise_detail, name='exercise_detail'),
     path('exams/', views.exam_list, name='exam_list'),
+    path('exam/<int:pk>/', views.exam_detail, name='exam_detail'), # Add this
+    # path('exam/<int:pk>/', views.exam_detail, name='exam_detail'),
+
     path('contact/', views.contact, name='contact'),  # New contact page URL
     path('send_contact_info/', views.send_contact_info, name='send_contact_info'),  # New URL for handling form submission
 ]
