@@ -1,0 +1,6 @@
+/* static/web/custom.css */
+
+#download,
+#print {
+  display: none !important;
+}

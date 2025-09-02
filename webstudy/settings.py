@@ -14,8 +14,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(BASE_DIR  )
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -24,9 +24,15 @@ SECRET_KEY = "django-insecure-nfl46g10he5oqs@-7zfne$h^f4p+@60em6e#hge*)csa&61@&p
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+SITE_URL = '127.0.0.1:5000'
 ALLOWED_HOSTS = []
 
+
+# ... (rest of your settings)
+
+# Media files (user-uploaded content)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Application definition
 
@@ -50,20 +56,26 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'webstudy.middleware.XFrameOptionsRemoveMiddleware', # Add this line
+
 ]
+
+# X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ROOT_URLCONF = "webstudy.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'webstudy', 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'courses.context_processors.all_levels',
+
             ],
         },
     },
@@ -81,6 +93,9 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 # Password validation

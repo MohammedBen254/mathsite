@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %} {% block title %}{{ chapter.title }}{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-4">{{ chapter.title }}</h1>
+
+{% if chapter.pdf_file.url %}
+    <div class="relative w-full h-[80vh] bg-gray-200">
+        <iframe
+            src="{% static 'web/viewer.html' %}?file={{ chapter.pdf_file.url }}"
+            width="100%"
+            height="100%"
+            style="border: none;"
+        >
+        </iframe>
+    </div>
+{% else %}
+    <p class="text-red-500">Aucun PDF n'a été téléversé pour ce chapitre.</p>
+{% endif %}
+{% endblock %}
