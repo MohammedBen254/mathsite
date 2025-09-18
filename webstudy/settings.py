@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-nfl46g10he5oqs@-7zfne$h^f4p+@60em6e#hge*)csa&61@&p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 SITE_URL = '127.0.0.1:5000'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mathsite-production.up.railway.app']
 
 
 # ... (rest of your settings)
